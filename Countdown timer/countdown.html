@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #timer-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #timer {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #controls {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div id="timer-container">
+    <div id="timer">00:00:00</div>
+    <div id="controls">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="stopTimer()">Stop</button>
+        <button onclick="resetTimer()">Reset</button>
+        <button onclick="restartTimer()">Restart</button>
+    </div>
+</div>
+
+<script>
+    let timer;
+    let totalTime = 300; // Set the countdown time in seconds
+    let paused = false;
+
+    function startTimer() {
+        if (!paused) {
+            clearInterval(timer);
+            totalTime = 300; // Reset the countdown time in seconds
+        }
+        timer = setInterval(updateTimer, 1000);
+        paused = false;
+    }
+
+    function stopTimer() {
+        clearInterval(timer);
+        paused = true;
+    }
+
+    function resetTimer() {
+        clearInterval(timer);
+        totalTime = 300; // Reset the countdown time in seconds
+        updateTimerDisplay();
+        paused = false;
+    }
+
+    function restartTimer() {
+        clearInterval(timer);
+        totalTime = 300; // Reset the countdown time in seconds
+        timer = setInterval(updateTimer, 1000);
+        paused = false;
+    }
+
+    function updateTimer() {
+        if (totalTime <= 0) {
+            clearInterval(timer);
+            alert("Time's up!");
+        } else {
+            totalTime--;
+            updateTimerDisplay();
+        }
+    }
+
+    function updateTimerDisplay() {
+        const hours = Math.floor(totalTime / 3600);
+        const minutes = Math.floor((totalTime % 3600) / 60);
+        const seconds = totalTime % 60;
+
+        document.getElementById('timer').innerText = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}`;
+    }
+
+    function formatTime(time) {
+        return time < 10 ? `0${time}` : time;
+    }
+
+    // Initial display
+    updateTimerDisplay();
+</script>
+
+</body>
+</html>

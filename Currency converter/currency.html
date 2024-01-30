@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #converter {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div id="converter">
+    <header>
+        <h2>Currency Converter</h2>
+    </header>
+    <main>
+        <label for="fromCurrency">From Currency:</label>
+        <input type="number" id="fromAmount" placeholder="Enter amount" />
+
+        <label for="fromCurrency">Select From Currency:</label>
+        <select id="fromCurrency"></select>
+
+        <label for="toCurrency">Select To Currency:</label>
+        <select id="toCurrency"></select>
+
+        <button onclick="convertCurrency()">Convert</button>
+
+        <div id="result"></div>
+    </main>
+</div>
+
+<script>
+    // Fetch the list of currencies and populate the dropdowns
+    fetch('https://api.exchangerate-api.com/v4/latest/USD')
+        .then(response => response.json())
+        .then(data => {
+            const currencies = Object.keys(data.rates);
+            const fromCurrencyDropdown = document.getElementById('fromCurrency');
+            const toCurrencyDropdown = document.getElementById('toCurrency');
+
+            currencies.forEach(currency => {
+                const option1 = document.createElement('option');
+                const option2 = document.createElement('option');
+
+                option1.text = currency;
+                option1.value = currency;
+                option2.text = currency;
+                option2.value = currency;
+
+                fromCurrencyDropdown.add(option1);
+                toCurrencyDropdown.add(option2);
+            });
+        })
+        .catch(error => console.error('Error fetching currencies:', error));
+
+    function convertCurrency() {
+        const fromAmount = document.getElementById('fromAmount').value;
+        const fromCurrency = document.getElementById('fromCurrency').value;
+        const toCurrency = document.getElementById('toCurrency').value;
+
+        fetch(`https://api.exchangerate-api.com/v4/latest/${fromCurrency}`)
+            .then(response => response.json())
+            .then(data => {
+                const exchangeRate = data.rates[toCurrency];
+                const result = (fromAmount * exchangeRate).toFixed(2);
+
+                document.getElementById('result').innerHTML = `${fromAmount} ${fromCurrency} is equal to ${result} ${toCurrency}`;
+            })
+            .catch(error => console.error('Error converting currency:', error));
+    }
+</script>
+
+</body>
+</html>
